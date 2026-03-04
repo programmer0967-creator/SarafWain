@@ -1,0 +1,310 @@
+// Translation strings for multi-language support
+
+export const translations = {
+  en: {
+    // Common
+    cancel: 'Cancel',
+    save: 'Save',
+    delete: 'Delete',
+    edit: 'Edit',
+    confirm: 'Confirm',
+    continue: 'Continue',
+    skip: 'Skip',
+    
+    // Onboarding
+    welcomeTitle: 'Welcome to SarafWain',
+    welcomeSubtitle: 'Track your income and expenses easily',
+    selectLanguage: 'Select Language',
+    enterName: 'Enter Your Name',
+    namePlaceholder: 'Your Name',
+    selectCurrency: 'Select Currency',
+    startingBalance: 'Starting Balance (Optional)',
+    startingBalancePlaceholder: '0',
+    letsStart: "Let's Start",
+    
+    // Dashboard
+    dashboard: 'Dashboard',
+    currentBalance: 'Current Balance',
+    thisMonth: 'This Month',
+    totalIncome: 'Total Income',
+    totalExpenses: 'Total Expenses',
+    savingsRate: 'Savings Rate',
+    spendingByCategory: 'Spending by Category',
+    recentTransactions: 'Recent Transactions',
+    viewAll: 'View All',
+    addTransaction: 'Add Transaction',
+    
+    // Transactions
+    transactions: 'Transactions',
+    income: 'Income',
+    expense: 'Expense',
+    noTransactions: 'No transactions yet',
+    noTransactionsDesc: 'Start tracking by adding your first transaction',
+    filterBy: 'Filter By',
+    all: 'All',
+    
+    // Add Transaction
+    addIncome: 'Add Income',
+    addExpense: 'Add Expense',
+    editIncome: 'Edit Income',
+    editExpense: 'Edit Expense',
+    amount: 'Amount',
+    amountPlaceholder: 'Enter amount',
+    category: 'Category',
+    selectCategory: 'Select Category',
+    date: 'Date',
+    note: 'Note (Optional)',
+    notePlaceholder: 'Add a note',
+    
+    // Categories
+    categories: 'Categories',
+    incomeCategories: 'Income Categories',
+    expenseCategories: 'Expense Categories',
+    
+    // Default Income Categories
+    salary: 'Salary',
+    freelance: 'Freelance',
+    business: 'Business',
+    gift: 'Gift',
+    investment: 'Investment',
+    otherIncome: 'Other',
+    
+    // Default Expense Categories
+    food: 'Food',
+    transport: 'Transport',
+    rent: 'Rent',
+    bills: 'Bills',
+    shopping: 'Shopping',
+    entertainment: 'Entertainment',
+    health: 'Health',
+    otherExpense: 'Other',
+    
+    // Reports
+    reports: 'Reports',
+    weeklyReport: 'Weekly Report',
+    monthlyReport: 'Monthly Report',
+    incomeVsExpense: 'Income vs Expense',
+    topExpenseCategories: 'Top Expense Categories',
+    financialAnalysis: 'Financial Analysis',
+    avgDailySpending: 'Avg Daily Spending',
+    burnRate: 'Burn Rate',
+    estimatedSafeDays: 'Estimated Safe Days',
+    financialHealth: 'Financial Health',
+    healthy: 'Healthy',
+    warning: 'Warning',
+    critical: 'Critical',
+    spendingVelocity: 'Spending Velocity',
+    projectionEndMonth: 'Projection End of Month',
+    
+    // Savings Goals
+    savingsGoals: 'Savings Goals',
+    noGoals: 'No savings goals yet',
+    noGoalsDesc: 'Create a goal to start tracking your progress',
+    addGoal: 'Add Goal',
+    editGoal: 'Edit Goal',
+    goalName: 'Goal Name',
+    goalNamePlaceholder: 'e.g., New Car',
+    targetAmount: 'Target Amount',
+    currentAmount: 'Current Amount',
+    progress: 'Progress',
+    
+    // Settings
+    settings: 'Settings',
+    profile: 'Profile',
+    name: 'Name',
+    currency: 'Currency',
+    language: 'Language',
+    appearance: 'Appearance',
+    theme: 'Theme',
+    light: 'Light',
+    dark: 'Dark',
+    system: 'System',
+    data: 'Data',
+    exportData: 'Export Data',
+    clearAllData: 'Clear All Data',
+    about: 'About',
+    version: 'Version',
+    
+    // Alerts
+    deleteTransaction: 'Delete Transaction?',
+    deleteTransactionMsg: 'This action cannot be undone',
+    deleteGoal: 'Delete Goal?',
+    deleteGoalMsg: 'This will remove the goal permanently',
+    clearData: 'Clear All Data?',
+    clearDataMsg: 'This will delete all transactions, goals, and settings. This action cannot be undone.',
+    budgetWarning75: 'Budget Warning',
+    budgetWarning75Msg: 'You have spent 75% of your monthly income',
+    budgetWarning90: 'Budget Alert',
+    budgetWarning90Msg: 'You have spent 90% of your monthly income',
+    
+    // Messages
+    transactionAdded: 'Transaction added successfully',
+    transactionUpdated: 'Transaction updated successfully',
+    transactionDeleted: 'Transaction deleted successfully',
+    goalAdded: 'Goal added successfully',
+    goalUpdated: 'Goal updated successfully',
+    goalDeleted: 'Goal deleted successfully',
+    settingsSaved: 'Settings saved successfully',
+    dataCleared: 'All data cleared successfully',
+    
+    // Errors
+    errorAmount: 'Please enter a valid amount',
+    errorCategory: 'Please select a category',
+    errorName: 'Please enter a name',
+    errorTargetAmount: 'Please enter a target amount',
+  },
+  ar: {
+    // Common
+    cancel: 'إلغاء',
+    save: 'حفظ',
+    delete: 'حذف',
+    edit: 'تعديل',
+    confirm: 'تأكيد',
+    continue: 'متابعة',
+    skip: 'تخطي',
+    
+    // Onboarding
+    welcomeTitle: 'مرحباً بك في صرف وين',
+    welcomeSubtitle: 'تتبع دخلك ومصروفاتك بسهولة',
+    selectLanguage: 'اختر اللغة',
+    enterName: 'أدخل اسمك',
+    namePlaceholder: 'اسمك',
+    selectCurrency: 'اختر العملة',
+    startingBalance: 'الرصيد الابتدائي (اختياري)',
+    startingBalancePlaceholder: '٠',
+    letsStart: 'لنبدأ',
+    
+    // Dashboard
+    dashboard: 'الرئيسية',
+    currentBalance: 'الرصيد الحالي',
+    thisMonth: 'هذا الشهر',
+    totalIncome: 'إجمالي الدخل',
+    totalExpenses: 'إجمالي المصروفات',
+    savingsRate: 'معدل الادخار',
+    spendingByCategory: 'المصروفات حسب الفئة',
+    recentTransactions: 'العمليات الأخيرة',
+    viewAll: 'عرض الكل',
+    addTransaction: 'إضافة عملية',
+    
+    // Transactions
+    transactions: 'العمليات',
+    income: 'دخل',
+    expense: 'مصروف',
+    noTransactions: 'لا توجد عمليات بعد',
+    noTransactionsDesc: 'ابدأ التتبع بإضافة أول عملية لك',
+    filterBy: 'تصفية حسب',
+    all: 'الكل',
+    
+    // Add Transaction
+    addIncome: 'إضافة دخل',
+    addExpense: 'إضافة مصروف',
+    editIncome: 'تعديل دخل',
+    editExpense: 'تعديل مصروف',
+    amount: 'المبلغ',
+    amountPlaceholder: 'أدخل المبلغ',
+    category: 'الفئة',
+    selectCategory: 'اختر الفئة',
+    date: 'التاريخ',
+    note: 'ملاحظة (اختياري)',
+    notePlaceholder: 'أضف ملاحظة',
+    
+    // Categories
+    categories: 'الفئات',
+    incomeCategories: 'فئات الدخل',
+    expenseCategories: 'فئات المصروفات',
+    
+    // Default Income Categories
+    salary: 'راتب',
+    freelance: 'عمل حر',
+    business: 'تجارة',
+    gift: 'هدية',
+    investment: 'استثمار',
+    otherIncome: 'أخرى',
+    
+    // Default Expense Categories
+    food: 'طعام',
+    transport: 'مواصلات',
+    rent: 'إيجار',
+    bills: 'فواتير',
+    shopping: 'تسوق',
+    entertainment: 'ترفيه',
+    health: 'صحة',
+    otherExpense: 'أخرى',
+    
+    // Reports
+    reports: 'التقارير',
+    weeklyReport: 'تقرير أسبوعي',
+    monthlyReport: 'تقرير شهري',
+    incomeVsExpense: 'الدخل مقابل المصروفات',
+    topExpenseCategories: 'أكثر فئات المصروفات',
+    financialAnalysis: 'التحليل المالي',
+    avgDailySpending: 'متوسط الإنفاق اليومي',
+    burnRate: 'معدل الإنفاق',
+    estimatedSafeDays: 'الأيام الآمنة المتوقعة',
+    financialHealth: 'الصحة المالية',
+    healthy: 'صحي',
+    warning: 'تحذير',
+    critical: 'حرج',
+    spendingVelocity: 'سرعة الإنفاق',
+    projectionEndMonth: 'التوقع نهاية الشهر',
+    
+    // Savings Goals
+    savingsGoals: 'أهداف الادخار',
+    noGoals: 'لا توجد أهداف ادخار بعد',
+    noGoalsDesc: 'أنشئ هدفاً لبدء تتبع تقدمك',
+    addGoal: 'إضافة هدف',
+    editGoal: 'تعديل هدف',
+    goalName: 'اسم الهدف',
+    goalNamePlaceholder: 'مثال: سيارة جديدة',
+    targetAmount: 'المبلغ المستهدف',
+    currentAmount: 'المبلغ الحالي',
+    progress: 'التقدم',
+    
+    // Settings
+    settings: 'الإعدادات',
+    profile: 'الملف الشخصي',
+    name: 'الاسم',
+    currency: 'العملة',
+    language: 'اللغة',
+    appearance: 'المظهر',
+    theme: 'السمة',
+    light: 'فاتح',
+    dark: 'داكن',
+    system: 'النظام',
+    data: 'البيانات',
+    exportData: 'تصدير البيانات',
+    clearAllData: 'حذف جميع البيانات',
+    about: 'حول',
+    version: 'الإصدار',
+    
+    // Alerts
+    deleteTransaction: 'حذف العملية؟',
+    deleteTransactionMsg: 'لا يمكن التراجع عن هذا الإجراء',
+    deleteGoal: 'حذف الهدف؟',
+    deleteGoalMsg: 'سيتم حذف الهدف نهائياً',
+    clearData: 'حذف جميع البيانات؟',
+    clearDataMsg: 'سيتم حذف جميع العمليات والأهداف والإعدادات. لا يمكن التراجع عن هذا الإجراء.',
+    budgetWarning75: 'تحذير الميزانية',
+    budgetWarning75Msg: 'لقد أنفقت 75% من دخلك الشهري',
+    budgetWarning90: 'تنبيه الميزانية',
+    budgetWarning90Msg: 'لقد أنفقت 90% من دخلك الشهري',
+    
+    // Messages
+    transactionAdded: 'تمت إضافة العملية بنجاح',
+    transactionUpdated: 'تم تحديث العملية بنجاح',
+    transactionDeleted: 'تم حذف العملية بنجاح',
+    goalAdded: 'تمت إضافة الهدف بنجاح',
+    goalUpdated: 'تم تحديث الهدف بنجاح',
+    goalDeleted: 'تم حذف الهدف بنجاح',
+    settingsSaved: 'تم حفظ الإعدادات بنجاح',
+    dataCleared: 'تم حذف جميع البيانات بنجاح',
+    
+    // Errors
+    errorAmount: 'الرجاء إدخال مبلغ صحيح',
+    errorCategory: 'الرجاء اختيار فئة',
+    errorName: 'الرجاء إدخال اسم',
+    errorTargetAmount: 'الرجاء إدخال المبلغ المستهدف',
+  },
+};
+
+export type TranslationKey = keyof typeof translations.en;
