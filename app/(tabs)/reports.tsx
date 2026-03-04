@@ -1,21 +1,28 @@
-// Reports screen
+// Reports and Analytics screen
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useTransactions } from '../../hooks/useTransactions';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSettings } from '../../hooks/useSettings';
-import { useTransactions } from '../../hooks/useTransactions';
+import { TimeRangeToggle } from '../../components/charts/TimeRangeToggle';
+import { PieChartView } from '../../components/charts/PieChartView';
+import { LineChartView } from '../../components/charts/LineChartView';
+import { BarChartView } from '../../components/charts/BarChartView';
+import { chartDataService, TimeRange } from '../../services/chartDataService';
 import { currencies } from '../../constants/currencies';
 
 export default function ReportsScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
   const { t } = useLanguage();
-  const { analysis, categorySpending } = useAnalytics();
+  const { transactions, categories } = useTransactions();
+  const { analysis } = useAnalytics();
   const { settings } = useSettings();
-  const { categories } = useTransactions();
+  const [selectedRange, setSelectedRange] = useState<TimeRange>('month');
 
   const currency = currencies.find(c => c.code === settings.currency);
 
@@ -23,33 +30,46 @@ export default function ReportsScreen() {
     return `${currency?.symbol || '$'}${amount.toFixed(2)}`;
   };
 
-  const getHealthColor = () => {
-    switch (analysis.financialHealth) {
+  const getHealthColor = (health: string) => {
+    switch (health) {
       case 'healthy':
         return theme.colors.success;
       case 'warning':
-        return theme.colors.warning;
+        return theme.colors.warning || '#f59e0b';
       case 'critical':
         return theme.colors.danger;
+      default:
+        return theme.colors.textSecondary;
     }
   };
 
-  const StatCard = ({ icon, label, value, color }: any) => (
-    <View style={[styles.statCard, { backgroundColor: theme.colors.surface }]}>
-      <View style={[styles.statIcon, { backgroundColor: `${color}20` }]}>
-        <MaterialIcons name={icon} size={24} color={color} />
-      </View>
-      <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
-        {label}
-      </Text>
-      <Text style={[styles.statValue, { color: theme.colors.text }]}>{value}</Text>
-    </View>
+  const getHealthIcon = (health: string) => {
+    switch (health) {
+      case 'healthy':
+        return 'check-circle';
+      case 'warning':
+        return 'warning';
+      case 'critical':
+        return 'error';
+      default:
+        return 'help';
+    }
+  };
+
+  // Get chart data based on selected range
+  const trendData = chartDataService.getTimeRangeData(transactions, selectedRange);
+  const comparisonData = chartDataService.getComparisonData(transactions, selectedRange);
+  const pieData = chartDataService.getCategoryPieData(
+    transactions,
+    categories,
+    selectedRange,
+    theme.colors.text
   );
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <Text style={[styles.title, { color: theme.colors.text }]}>
+        <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
           {t('reports')}
         </Text>
       </View>
@@ -59,97 +79,143 @@ export default function ReportsScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.healthCard, { backgroundColor: getHealthColor() }]}>
-          <MaterialIcons name="favorite" size={32} color="#ffffff" />
-          <Text style={styles.healthLabel}>{t('financialHealth')}</Text>
-          <Text style={styles.healthValue}>
-            {t(analysis.financialHealth as any)}
-          </Text>
-        </View>
+        {/* Time Range Toggle */}
+        <TimeRangeToggle
+          selectedRange={selectedRange}
+          onRangeChange={setSelectedRange}
+        />
 
-        <View style={styles.statsGrid}>
-          <StatCard
-            icon="trending-down"
-            label={t('avgDailySpending')}
-            value={formatAmount(analysis.avgDailySpending)}
-            color={theme.colors.primary}
-          />
-          <StatCard
-            icon="speed"
-            label={t('burnRate')}
-            value={`${analysis.burnRate.toFixed(1)}%`}
-            color={theme.colors.warning}
-          />
-          <StatCard
-            icon="event"
-            label={t('estimatedSafeDays')}
-            value={analysis.estimatedSafeDays > 999 ? '999+' : analysis.estimatedSafeDays}
-            color={theme.colors.success}
-          />
-          <StatCard
-            icon="savings"
-            label={t('savingsRate')}
-            value={`${analysis.savingsRate.toFixed(1)}%`}
-            color={theme.colors.income}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-            {t('topExpenseCategories')}
-          </Text>
-
-          {analysis.topExpenseCategories.length === 0 ? (
-            <View style={styles.emptyState}>
+        {/* Financial Health Summary */}
+        <View style={[styles.summaryCard, { backgroundColor: theme.colors.surface }]}>
+          <View style={styles.summaryHeader}>
+            <Text style={[styles.summaryTitle, { color: theme.colors.text }]}>
+              {t('financialAnalysis')}
+            </Text>
+            <View style={styles.healthBadge}>
               <MaterialIcons
-                name="pie-chart"
-                size={48}
-                color={theme.colors.textTertiary}
+                name={getHealthIcon(analysis.financialHealth) as any}
+                size={20}
+                color={getHealthColor(analysis.financialHealth)}
               />
-              <Text style={[styles.emptyText, { color: theme.colors.textSecondary }]}>
-                {t('noTransactions')}
+              <Text
+                style={[
+                  styles.healthText,
+                  { color: getHealthColor(analysis.financialHealth) },
+                ]}
+              >
+                {t(analysis.financialHealth)}
               </Text>
             </View>
-          ) : (
-            analysis.topExpenseCategories.map((item, index) => {
-              const category = categories.find(c => c.id === item.category);
+          </View>
+
+          <View style={styles.statsGrid}>
+            <View style={styles.statItem}>
+              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
+                {t('savingsRate')}
+              </Text>
+              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                {analysis.savingsRate.toFixed(1)}%
+              </Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
+                {t('avgDailySpending')}
+              </Text>
+              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                {formatAmount(analysis.avgDailySpending)}
+              </Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
+                {t('burnRate')}
+              </Text>
+              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                {analysis.burnRate.toFixed(1)}%
+              </Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
+                {t('estimatedSafeDays')}
+              </Text>
+              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+                {analysis.estimatedSafeDays > 365 ? '365+' : analysis.estimatedSafeDays}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Pie Chart - Spending Distribution */}
+        <PieChartView
+          data={pieData}
+          title={t('spendingDistribution')}
+        />
+
+        {/* Line Chart - Trend Analysis */}
+        <LineChartView
+          data={trendData}
+          title={t('trendAnalysis')}
+        />
+
+        {/* Bar Chart - Period Comparison */}
+        <BarChartView
+          data={comparisonData}
+          title={t('periodComparison')}
+        />
+
+        {/* Top Expense Categories */}
+        {analysis.topExpenseCategories.length > 0 && (
+          <View style={[styles.categoryCard, { backgroundColor: theme.colors.surface }]}>
+            <Text style={[styles.categoryTitle, { color: theme.colors.text }]}>
+              {t('topExpenseCategories')}
+            </Text>
+            {analysis.topExpenseCategories.map((cat, index) => {
+              const category = categories.find(c => c.id === cat.category);
               return (
-                <View
-                  key={item.category}
-                  style={[styles.categoryItem, { backgroundColor: theme.colors.surface }]}
-                >
-                  <View style={styles.categoryLeft}>
+                <View key={cat.category} style={styles.categoryItem}>
+                  <View style={styles.categoryInfo}>
                     <View
                       style={[
-                        styles.categoryIcon,
-                        { backgroundColor: `${category?.color || theme.colors.primary}20` },
+                        styles.categoryRank,
+                        { backgroundColor: theme.colors.primary },
                       ]}
                     >
-                      <MaterialIcons
-                        name={category?.icon as any || 'category'}
-                        size={20}
-                        color={category?.color || theme.colors.primary}
-                      />
+                      <Text style={styles.rankText}>{index + 1}</Text>
                     </View>
-                    <View>
+                    <View style={styles.categoryDetails}>
                       <Text style={[styles.categoryName, { color: theme.colors.text }]}>
-                        {category ? t(category.name as any) : item.category}
+                        {category?.name || 'Unknown'}
                       </Text>
-                      <Text
-                        style={[styles.categoryPercentage, { color: theme.colors.textSecondary }]}
-                      >
-                        {item.percentage.toFixed(1)}%
-                      </Text>
+                      <View style={styles.progressBar}>
+                        <View
+                          style={[
+                            styles.progressFill,
+                            {
+                              width: `${cat.percentage}%`,
+                              backgroundColor: category?.color || theme.colors.primary,
+                            },
+                          ]}
+                        />
+                      </View>
                     </View>
                   </View>
-                  <Text style={[styles.categoryAmount, { color: theme.colors.text }]}>
-                    {formatAmount(item.amount)}
-                  </Text>
+                  <View style={styles.categoryAmount}>
+                    <Text style={[styles.categoryAmountText, { color: theme.colors.text }]}>
+                      {formatAmount(cat.amount)}
+                    </Text>
+                    <Text
+                      style={[styles.categoryPercentage, { color: theme.colors.textSecondary }]}
+                    >
+                      {cat.percentage.toFixed(1)}%
+                    </Text>
+                  </View>
                 </View>
               );
-            })
-          )}
-        </View>
+            })}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -163,8 +229,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 16,
   },
-  title: {
-    fontSize: 28,
+  headerTitle: {
+    fontSize: 32,
     fontWeight: '700',
   },
   content: {
@@ -174,101 +240,109 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingBottom: 100,
   },
-  healthCard: {
-    padding: 24,
+  summaryCard: {
     borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+  },
+  summaryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 20,
   },
-  healthLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#ffffff',
-    marginTop: 12,
-    opacity: 0.9,
-  },
-  healthValue: {
-    fontSize: 24,
+  summaryTitle: {
+    fontSize: 18,
     fontWeight: '700',
-    color: '#ffffff',
-    marginTop: 4,
+  },
+  healthBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  healthText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 24,
+    gap: 16,
   },
-  statCard: {
+  statItem: {
     flex: 1,
     minWidth: '45%',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  statIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
   },
   statLabel: {
     fontSize: 12,
-    textAlign: 'center',
     marginBottom: 4,
   },
   statValue: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '700',
   },
-  section: {
-    marginBottom: 24,
+  categoryCard: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
   },
-  sectionTitle: {
+  categoryTitle: {
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 16,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 32,
-  },
-  emptyText: {
-    fontSize: 14,
-    marginTop: 12,
   },
   categoryItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 16,
   },
-  categoryLeft: {
+  categoryInfo: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    marginRight: 16,
   },
-  categoryIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  categoryRank: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  rankText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  categoryDetails: {
+    flex: 1,
   },
   categoryName: {
     fontSize: 14,
     fontWeight: '600',
+    marginBottom: 6,
+  },
+  progressBar: {
+    height: 6,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  categoryAmount: {
+    alignItems: 'flex-end',
+  },
+  categoryAmountText: {
+    fontSize: 16,
+    fontWeight: '700',
     marginBottom: 2,
   },
   categoryPercentage: {
     fontSize: 12,
-  },
-  categoryAmount: {
-    fontSize: 16,
-    fontWeight: '700',
   },
 });

@@ -96,6 +96,16 @@ export const translations = {
     spendingVelocity: 'Spending Velocity',
     projectionEndMonth: 'Projection End of Month',
     
+    // Charts
+    weekly: 'Weekly',
+    monthly: 'Monthly',
+    yearly: 'Yearly',
+    trendAnalysis: 'Trend Analysis',
+    periodComparison: 'Period Comparison',
+    spendingDistribution: 'Spending Distribution',
+    netSavings: 'Net Savings',
+    noData: 'No data available',
+    
     // Savings Goals
     savingsGoals: 'Savings Goals',
     noGoals: 'No savings goals yet',
@@ -270,6 +280,16 @@ export const translations = {
     critical: 'حرج',
     spendingVelocity: 'سرعة الإنفاق',
     projectionEndMonth: 'التوقع نهاية الشهر',
+    
+    // Charts
+    weekly: 'أسبوعي',
+    monthly: 'شهري',
+    yearly: 'سنوي',
+    trendAnalysis: 'تحليل الاتجاه',
+    periodComparison: 'مقارنة الفترات',
+    spendingDistribution: 'توزيع المصروفات',
+    netSavings: 'صافي الادخار',
+    noData: 'لا توجد بيانات',
     
     // Savings Goals
     savingsGoals: 'أهداف الادخار',
