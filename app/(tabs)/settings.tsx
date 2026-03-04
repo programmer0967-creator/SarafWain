@@ -1,5 +1,6 @@
 // Settings screen
 import { View, Text, StyleSheet, ScrollView, Pressable, Switch } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
@@ -9,6 +10,7 @@ import { useAlert } from '@/template';
 import { storageService } from '../../services/storageService';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const { theme, themeMode, setThemeMode, isDark } = useTheme();
   const { t, language, setLanguage } = useLanguage();
@@ -86,6 +88,11 @@ export default function SettingsScreen() {
             label={t('currency')}
             value={settings.currency}
             onPress={() => {}}
+          />
+          <SettingItem
+            icon="category"
+            label={t('manageCategories')}
+            onPress={() => router.push('/manage-categories')}
           />
         </View>
 

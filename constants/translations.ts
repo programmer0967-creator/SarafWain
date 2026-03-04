@@ -147,11 +147,29 @@ export const translations = {
     settingsSaved: 'Settings saved successfully',
     dataCleared: 'All data cleared successfully',
     
+    // Category Management
+    manageCategories: 'Manage Categories',
+    addCategory: 'Add Category',
+    editCategory: 'Edit Category',
+    deleteCategory: 'Delete Category?',
+    deleteCategoryMsg: 'This will remove the category permanently',
+    categoryName: 'Category Name',
+    categoryNamePlaceholder: 'e.g., Groceries',
+    selectIcon: 'Select Icon',
+    selectColor: 'Select Color',
+    customCategories: 'Custom Categories',
+    defaultCategories: 'Default Categories',
+    cannotDeleteDefault: 'Cannot delete default category',
+    categoryType: 'Category Type',
+    
     // Errors
     errorAmount: 'Please enter a valid amount',
     errorCategory: 'Please select a category',
     errorName: 'Please enter a name',
     errorTargetAmount: 'Please enter a target amount',
+    errorCategoryName: 'Please enter a category name',
+    errorCategoryIcon: 'Please select an icon',
+    errorCategoryColor: 'Please select a color',
   },
   ar: {
     // Common
@@ -299,11 +317,29 @@ export const translations = {
     settingsSaved: 'تم حفظ الإعدادات بنجاح',
     dataCleared: 'تم حذف جميع البيانات بنجاح',
     
+    // Category Management
+    manageCategories: 'إدارة الفئات',
+    addCategory: 'إضافة فئة',
+    editCategory: 'تعديل فئة',
+    deleteCategory: 'حذف الفئة؟',
+    deleteCategoryMsg: 'سيتم حذف الفئة نهائياً',
+    categoryName: 'اسم الفئة',
+    categoryNamePlaceholder: 'مثال: بقالة',
+    selectIcon: 'اختر أيقونة',
+    selectColor: 'اختر لون',
+    customCategories: 'فئات مخصصة',
+    defaultCategories: 'الفئات الافتراضية',
+    cannotDeleteDefault: 'لا يمكن حذف الفئة الافتراضية',
+    categoryType: 'نوع الفئة',
+    
     // Errors
     errorAmount: 'الرجاء إدخال مبلغ صحيح',
     errorCategory: 'الرجاء اختيار فئة',
     errorName: 'الرجاء إدخال اسم',
     errorTargetAmount: 'الرجاء إدخال المبلغ المستهدف',
+    errorCategoryName: 'الرجاء إدخال اسم الفئة',
+    errorCategoryIcon: 'الرجاء اختيار أيقونة',
+    errorCategoryColor: 'الرجاء اختيار لون',
   },
 };
 

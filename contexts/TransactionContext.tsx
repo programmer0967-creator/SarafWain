@@ -11,6 +11,9 @@ interface TransactionContextType {
   updateTransaction: (id: string, transaction: Partial<Transaction>) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
   loadTransactions: () => Promise<void>;
+  addCategory: (category: Omit<Category, 'id'>) => Promise<void>;
+  updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
 }
 
 export const TransactionContext = createContext<TransactionContextType | undefined>(undefined);
@@ -69,6 +72,38 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
     await loadData();
   };
 
+  const addCategory = async (category: Omit<Category, 'id'>) => {
+    const newCategory: Category = {
+      ...category,
+      id: `category_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    };
+
+    const updatedCategories = [...categories, newCategory];
+    setCategories(updatedCategories);
+    await storageService.saveCategories(updatedCategories);
+  };
+
+  const updateCategory = async (id: string, updates: Partial<Category>) => {
+    const updatedCategories = categories.map(c =>
+      c.id === id ? { ...c, ...updates } : c
+    );
+    setCategories(updatedCategories);
+    await storageService.saveCategories(updatedCategories);
+  };
+
+  const deleteCategory = async (id: string) => {
+    const category = categories.find(c => c.id === id);
+    
+    // Prevent deletion of default categories
+    if (category?.isDefault) {
+      throw new Error('Cannot delete default category');
+    }
+
+    const updatedCategories = categories.filter(c => c.id !== id);
+    setCategories(updatedCategories);
+    await storageService.saveCategories(updatedCategories);
+  };
+
   return (
     <TransactionContext.Provider
       value={{
@@ -78,6 +113,9 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
         updateTransaction,
         deleteTransaction,
         loadTransactions,
+        addCategory,
+        updateCategory,
+        deleteCategory,
       }}
     >
       {children}

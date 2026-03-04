@@ -27,6 +27,14 @@ export default function RootLayout() {
                       headerShown: false,
                     }}
                   />
+                  <Stack.Screen name="manage-categories" />
+                  <Stack.Screen
+                    name="edit-category"
+                    options={{
+                      presentation: 'modal',
+                      headerShown: false,
+                    }}
+                  />
                 </Stack>
               </TransactionProvider>
             </ThemeProvider>
