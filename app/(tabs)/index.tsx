@@ -8,8 +8,10 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { useTransactions } from '../../hooks/useTransactions';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSettings } from '../../hooks/useSettings';
+import { useBudgetWarnings } from '../../hooks/useBudgetWarnings';
 import { BalanceCard } from '../../components/dashboard/BalanceCard';
 import { StatsGrid } from '../../components/dashboard/StatsGrid';
+import { BudgetWarningBanner } from '../../components/dashboard/BudgetWarningBanner';
 import { TransactionItem } from '../../components/transaction/TransactionItem';
 import { currencies } from '../../constants/currencies';
 
@@ -21,6 +23,9 @@ export default function DashboardScreen() {
   const { transactions, categories } = useTransactions();
   const { analysis } = useAnalytics();
   const { settings } = useSettings();
+  const { shouldShowWarning, dismissWarning } = useBudgetWarnings();
+
+  const warningLevel = shouldShowWarning(analysis.burnRate);
 
   const currency = currencies.find(c => c.code === settings.currency);
 
@@ -59,6 +64,13 @@ export default function DashboardScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {warningLevel && (
+          <BudgetWarningBanner
+            analysis={analysis}
+            onDismiss={() => dismissWarning(warningLevel)}
+          />
+        )}
+
         <BalanceCard
           balance={analysis.currentBalance}
           income={analysis.totalIncome}

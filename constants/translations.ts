@@ -136,6 +136,11 @@ export const translations = {
     budgetWarning75Msg: 'You have spent 75% of your monthly income',
     budgetWarning90: 'Budget Alert',
     budgetWarning90Msg: 'You have spent 90% of your monthly income',
+    budgetWarningMsg: 'You have spent {{percentage}}% of your monthly income',
+    spendingVeryFast: 'Very Fast',
+    spendingFast: 'Fast',
+    spendingNormal: 'Normal',
+    spendingSlow: 'Slow',
     
     // Messages
     transactionAdded: 'Transaction added successfully',
@@ -303,9 +308,14 @@ export const translations = {
     clearData: 'حذف جميع البيانات؟',
     clearDataMsg: 'سيتم حذف جميع العمليات والأهداف والإعدادات. لا يمكن التراجع عن هذا الإجراء.',
     budgetWarning75: 'تحذير الميزانية',
-    budgetWarning75Msg: 'لقد أنفقت 75% من دخلك الشهري',
+    budgetWarning75Msg: 'لقد أنفقت ٧٥٪ من دخلك الشهري',
     budgetWarning90: 'تنبيه الميزانية',
-    budgetWarning90Msg: 'لقد أنفقت 90% من دخلك الشهري',
+    budgetWarning90Msg: 'لقد أنفقت ٩٠٪ من دخلك الشهري',
+    budgetWarningMsg: 'لقد أنفقت {{percentage}}٪ من دخلك الشهري',
+    spendingVeryFast: 'سريع جداً',
+    spendingFast: 'سريع',
+    spendingNormal: 'طبيعي',
+    spendingSlow: 'بطيء',
     
     // Messages
     transactionAdded: 'تمت إضافة العملية بنجاح',

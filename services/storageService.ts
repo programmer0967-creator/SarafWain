@@ -6,6 +6,7 @@ const KEYS = {
   CATEGORIES: '@sarafwain_categories',
   SAVINGS_GOALS: '@sarafwain_goals',
   USER_SETTINGS: '@sarafwain_settings',
+  DISMISSED_WARNINGS: '@sarafwain_dismissed_warnings',
 };
 
 export const storageService = {
@@ -89,6 +90,38 @@ export const storageService = {
     }
   },
 
+  async getDismissedWarnings() {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.DISMISSED_WARNINGS);
+      return data ? JSON.parse(data) : {};
+    } catch (error) {
+      console.error('Error getting dismissed warnings:', error);
+      return {};
+    }
+  },
+
+  async saveDismissedWarning(warningKey: string, timestamp: string) {
+    try {
+      const dismissed = await this.getDismissedWarnings();
+      dismissed[warningKey] = timestamp;
+      await AsyncStorage.setItem(KEYS.DISMISSED_WARNINGS, JSON.stringify(dismissed));
+      return true;
+    } catch (error) {
+      console.error('Error saving dismissed warning:', error);
+      return false;
+    }
+  },
+
+  async clearDismissedWarnings() {
+    try {
+      await AsyncStorage.removeItem(KEYS.DISMISSED_WARNINGS);
+      return true;
+    } catch (error) {
+      console.error('Error clearing dismissed warnings:', error);
+      return false;
+    }
+  },
+
   async clearAllData() {
     try {
       await AsyncStorage.multiRemove([
@@ -96,6 +129,7 @@ export const storageService = {
         KEYS.CATEGORIES,
         KEYS.SAVINGS_GOALS,
         KEYS.USER_SETTINGS,
+        KEYS.DISMISSED_WARNINGS,
       ]);
       return true;
     } catch (error) {
