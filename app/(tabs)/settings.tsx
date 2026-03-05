@@ -97,6 +97,11 @@ export default function SettingsScreen() {
             label={t('manageCategories')}
             onPress={() => router.push('/manage-categories')}
           />
+          <SettingItem
+            icon="savings"
+            label={t('budgetManagement')}
+            onPress={() => router.push('/budget')}
+          />
         </View>
 
         <View style={styles.section}>

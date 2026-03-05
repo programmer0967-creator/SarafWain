@@ -9,6 +9,7 @@ import { useTransactions } from '../../hooks/useTransactions';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSettings } from '../../hooks/useSettings';
 import { useBudgetWarnings } from '../../hooks/useBudgetWarnings';
+import { useBudget } from '../../hooks/useBudget';
 import { BalanceCard } from '../../components/dashboard/BalanceCard';
 import { StatsGrid } from '../../components/dashboard/StatsGrid';
 import { BudgetWarningBanner } from '../../components/dashboard/BudgetWarningBanner';
@@ -24,6 +25,7 @@ export default function DashboardScreen() {
   const { analysis } = useAnalytics();
   const { settings } = useSettings();
   const { shouldShowWarning, dismissWarning } = useBudgetWarnings();
+  const { budgets, alerts } = useBudget();
 
   const warningLevel = shouldShowWarning(analysis.burnRate);
 
@@ -82,6 +84,25 @@ export default function DashboardScreen() {
           avgDailySpending={formatAmount(analysis.avgDailySpending)}
           safeDays={analysis.estimatedSafeDays}
         />
+
+        {budgets.length > 0 && (
+          <Pressable
+            onPress={() => router.push('/budget')}
+            style={[styles.budgetCard, { backgroundColor: theme.colors.surface }]}
+          >
+            <View style={styles.budgetHeader}>
+              <MaterialIcons name="savings" size={24} color={theme.colors.primary} />
+              <Text style={[styles.budgetTitle, { color: theme.colors.text }]}>
+                {t('budgetManagement')}
+              </Text>
+              <MaterialIcons name="chevron-right" size={24} color={theme.colors.textTertiary} />
+            </View>
+            {alerts.length > 0 && (
+              <View style={[styles.alertBadge, { backgroundColor: theme.colors.danger }]}>                <Text style={styles.alertBadgeText}>{alerts.length}</Text>
+              </View>
+            )}
+          </Pressable>
+        )}
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -219,5 +240,36 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
+  },
+  budgetCard: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 24,
+    position: 'relative',
+  },
+  budgetHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  budgetTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  alertBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  alertBadgeText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '700',
   },
 });

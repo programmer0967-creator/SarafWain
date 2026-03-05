@@ -15,3 +15,6 @@ export * from './charts/TimeRangeToggle';
 export * from './charts/PieChartView';
 export * from './charts/LineChartView';
 export * from './charts/BarChartView';
+export * from './budget/BudgetCard';
+export * from './budget/BudgetChart';
+export * from './budget/BudgetRecommendations';

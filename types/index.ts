@@ -6,6 +6,7 @@ export interface Transaction {
   category: string;
   date: string;
   note?: string;
+  createdAt?: string;
 }
 
 export interface Category {
@@ -88,4 +89,42 @@ export interface ExportResult {
   success: boolean;
   uri?: string;
   error?: string;
+}
+
+export interface Budget {
+  id: string;
+  categoryId: string;
+  limit: number;
+  spent: number;
+  period: 'monthly' | 'yearly';
+  rolloverEnabled: boolean;
+  rolloverAmount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BudgetSettings {
+  notificationsEnabled: boolean;
+  warningThreshold: number; // percentage (e.g., 80)
+  criticalThreshold: number; // percentage (e.g., 100)
+  rolloverEnabled: boolean;
+}
+
+export interface BudgetRecommendation {
+  categoryId: string;
+  categoryName: string;
+  currentSpending: number;
+  suggestedLimit: number;
+  reason: string;
+  confidence: 'high' | 'medium' | 'low';
+}
+
+export interface BudgetAlert {
+  id: string;
+  budgetId: string;
+  categoryId: string;
+  type: 'warning' | 'exceeded' | 'approaching';
+  percentage: number;
+  timestamp: string;
+  dismissed: boolean;
 }

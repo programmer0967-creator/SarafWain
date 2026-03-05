@@ -8,6 +8,9 @@ const KEYS = {
   USER_SETTINGS: '@sarafwain_settings',
   DISMISSED_WARNINGS: '@sarafwain_dismissed_warnings',
   FILTER_PRESETS: '@sarafwain_filter_presets',
+  BUDGETS: '@sarafwain_budgets',
+  BUDGET_SETTINGS: '@sarafwain_budget_settings',
+  BUDGET_ALERTS: '@sarafwain_budget_alerts',
 };
 
 export const storageService = {
@@ -132,6 +135,9 @@ export const storageService = {
         KEYS.USER_SETTINGS,
         KEYS.DISMISSED_WARNINGS,
         KEYS.FILTER_PRESETS,
+        KEYS.BUDGETS,
+        KEYS.BUDGET_SETTINGS,
+        KEYS.BUDGET_ALERTS,
       ]);
       return true;
     } catch (error) {
@@ -177,6 +183,77 @@ export const storageService = {
       return true;
     } catch (error) {
       console.error('Error deleting filter preset:', error);
+      return false;
+    }
+  },
+
+  // Budget operations
+  async getBudgets() {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.BUDGETS);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.error('Error getting budgets:', error);
+      return [];
+    }
+  },
+
+  async saveBudgets(budgets: any[]) {
+    try {
+      await AsyncStorage.setItem(KEYS.BUDGETS, JSON.stringify(budgets));
+      return true;
+    } catch (error) {
+      console.error('Error saving budgets:', error);
+      return false;
+    }
+  },
+
+  async getBudgetSettings() {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.BUDGET_SETTINGS);
+      return data ? JSON.parse(data) : {
+        notificationsEnabled: true,
+        warningThreshold: 80,
+        criticalThreshold: 100,
+        rolloverEnabled: false,
+      };
+    } catch (error) {
+      console.error('Error getting budget settings:', error);
+      return {
+        notificationsEnabled: true,
+        warningThreshold: 80,
+        criticalThreshold: 100,
+        rolloverEnabled: false,
+      };
+    }
+  },
+
+  async saveBudgetSettings(settings: any) {
+    try {
+      await AsyncStorage.setItem(KEYS.BUDGET_SETTINGS, JSON.stringify(settings));
+      return true;
+    } catch (error) {
+      console.error('Error saving budget settings:', error);
+      return false;
+    }
+  },
+
+  async getBudgetAlerts() {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.BUDGET_ALERTS);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.error('Error getting budget alerts:', error);
+      return [];
+    }
+  },
+
+  async saveBudgetAlerts(alerts: any[]) {
+    try {
+      await AsyncStorage.setItem(KEYS.BUDGET_ALERTS, JSON.stringify(alerts));
+      return true;
+    } catch (error) {
+      console.error('Error saving budget alerts:', error);
       return false;
     }
   },

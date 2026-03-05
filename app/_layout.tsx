@@ -7,6 +7,7 @@ import { LanguageProvider } from '../contexts/LanguageContext';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { SettingsProvider } from '../contexts/SettingsContext';
 import { TransactionProvider } from '../contexts/TransactionContext';
+import { BudgetProvider } from '../contexts/BudgetContext';
 
 export default function RootLayout() {
   return (
@@ -16,26 +17,36 @@ export default function RootLayout() {
           <LanguageProvider>
             <ThemeProvider>
               <TransactionProvider>
-                <StatusBar style="auto" />
-                <Stack screenOptions={{ headerShown: false }}>
-                  <Stack.Screen name="onboarding" />
-                  <Stack.Screen name="(tabs)" />
-                  <Stack.Screen
-                    name="add-transaction"
-                    options={{
-                      presentation: 'modal',
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen name="manage-categories" />
-                  <Stack.Screen
-                    name="edit-category"
-                    options={{
-                      presentation: 'modal',
-                      headerShown: false,
-                    }}
-                  />
-                </Stack>
+                <BudgetProvider>
+                  <StatusBar style="auto" />
+                  <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="onboarding" />
+                    <Stack.Screen name="(tabs)" />
+                    <Stack.Screen
+                      name="add-transaction"
+                      options={{
+                        presentation: 'modal',
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen name="manage-categories" />
+                    <Stack.Screen
+                      name="edit-category"
+                      options={{
+                        presentation: 'modal',
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen name="budget" />
+                    <Stack.Screen
+                      name="edit-budget"
+                      options={{
+                        presentation: 'modal',
+                        headerShown: false,
+                      }}
+                    />
+                  </Stack>
+                </BudgetProvider>
               </TransactionProvider>
             </ThemeProvider>
           </LanguageProvider>
