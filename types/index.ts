@@ -1,21 +1,17 @@
 // Type definitions
-
-export type TransactionType = 'income' | 'expense';
-
 export interface Transaction {
   id: string;
-  type: TransactionType;
+  type: 'income' | 'expense';
   amount: number;
   category: string;
   date: string;
   note?: string;
-  createdAt: string;
 }
 
 export interface Category {
   id: string;
   name: string;
-  type: TransactionType;
+  type: 'income' | 'expense';
   icon: string;
   color: string;
   isDefault: boolean;
@@ -29,13 +25,13 @@ export interface SavingsGoal {
   createdAt: string;
 }
 
-export interface UserSettings {
+export interface Settings {
   name: string;
   currency: string;
   language: 'en' | 'ar';
   theme: 'light' | 'dark' | 'system';
   startingBalance: number;
-  onboardingCompleted: boolean;
+  hasCompletedOnboarding: boolean;
 }
 
 export interface FinancialAnalysis {
@@ -49,5 +45,30 @@ export interface FinancialAnalysis {
   savingsRate: number;
   spendingVelocity: number;
   projectionEndMonth: number;
-  topExpenseCategories: { category: string; amount: number; percentage: number }[];
+  topExpenseCategories: Array<{
+    category: string;
+    amount: number;
+    percentage: number;
+  }>;
 }
+
+export interface TransactionFilter {
+  searchQuery?: string;
+  types?: Array<'income' | 'expense'>;
+  categories?: string[];
+  amountMin?: number;
+  amountMax?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  sortBy?: 'date' | 'amount';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface FilterPreset {
+  id: string;
+  name: string;
+  filter: TransactionFilter;
+  createdAt: string;
+}
+
+export type QuickFilterType = 'all' | 'today' | 'week' | 'month' | 'year';

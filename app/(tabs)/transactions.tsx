@@ -1,105 +1,144 @@
-// Transactions list screen
-import { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+// Transactions list screen with advanced search and filtering
+import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import { useLanguage } from '../../hooks/useLanguage';
-import { useTransactions } from '../../hooks/useTransactions';
+import { useTransactionFilters } from '../../hooks/useTransactionFilters';
+import { SearchBar } from '../../components/transaction/SearchBar';
+import { QuickFilters } from '../../components/transaction/QuickFilters';
+import { FilterSheet } from '../../components/transaction/FilterSheet';
 import { TransactionItem } from '../../components/transaction/TransactionItem';
-import { TransactionType } from '../../types';
+import { QuickFilterType } from '../../types';
 
 export default function TransactionsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
   const { t } = useLanguage();
-  const { transactions, categories } = useTransactions();
-  const [filter, setFilter] = useState<'all' | TransactionType>('all');
+  
+  const {
+    filter,
+    updateFilter,
+    applyQuickFilter,
+    clearFilter,
+    isFilterActive,
+    filteredTransactions,
+    presets,
+    loadPresets,
+    savePreset,
+    applyPreset,
+    deletePreset,
+  } = useTransactionFilters();
 
-  const filteredTransactions = transactions
-    .filter(t => filter === 'all' || t.type === filter)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState<QuickFilterType>('all');
 
-  const FilterButton = ({ value, label }: { value: 'all' | TransactionType; label: string }) => (
-    <Pressable
-      onPress={() => setFilter(value)}
-      style={({ pressed }) => [
-        styles.filterButton,
-        {
-          backgroundColor: filter === value ? theme.colors.primary : theme.colors.surface,
-          opacity: pressed ? 0.7 : 1,
-        },
-      ]}
-    >
-      <Text
-        style={[
-          styles.filterText,
-          { color: filter === value ? '#ffffff' : theme.colors.text },
-        ]}
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
+  useEffect(() => {
+    loadPresets();
+  }, []);
+
+  const handleQuickFilterSelect = (type: QuickFilterType) => {
+    setSelectedQuickFilter(type);
+    applyQuickFilter(type);
+  };
+
+  const handleSearchChange = (text: string) => {
+    updateFilter({ searchQuery: text });
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <Text style={[styles.title, { color: theme.colors.text }]}>
+        <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
           {t('transactions')}
         </Text>
-        <Pressable
-          onPress={() => router.push('/add-transaction')}
-          style={({ pressed }) => [
-            styles.addButton,
-            { backgroundColor: theme.colors.primary, opacity: pressed ? 0.8 : 1 },
-          ]}
-        >
-          <MaterialIcons name="add" size={24} color="#ffffff" />
-        </Pressable>
+        <Text style={[styles.headerSubtitle, { color: theme.colors.textSecondary }]}>
+          {filteredTransactions.length} {t('transactions').toLowerCase()}
+        </Text>
       </View>
 
-      <View style={styles.filterContainer}>
-        <FilterButton value="all" label={t('all')} />
-        <FilterButton value="income" label={t('income')} />
-        <FilterButton value="expense" label={t('expense')} />
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <SearchBar
+          value={filter.searchQuery || ''}
+          onChangeText={handleSearchChange}
+          onFilterPress={() => setShowFilterSheet(true)}
+          hasActiveFilters={isFilterActive}
+        />
       </View>
 
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {filteredTransactions.length === 0 ? (
+      {/* Quick Filters */}
+      <QuickFilters
+        selectedFilter={selectedQuickFilter}
+        onFilterSelect={handleQuickFilterSelect}
+      />
+
+      {/* Transactions List */}
+      <FlatList
+        data={filteredTransactions}
+        keyExtractor={item => item.id}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: insets.bottom + 80 },
+        ]}
+        renderItem={({ item }) => (
+          <TransactionItem
+            transaction={item}
+            category={undefined}
+            onPress={() => router.push(`/add-transaction?id=${item.id}`)}
+          />
+        )}
+        ListEmptyComponent={
           <View style={styles.emptyState}>
             <MaterialIcons
-              name="receipt-long"
+              name={isFilterActive ? 'filter-list-off' : 'receipt-long'}
               size={64}
               color={theme.colors.textTertiary}
             />
             <Text style={[styles.emptyText, { color: theme.colors.textSecondary }]}>
-              {t('noTransactions')}
+              {isFilterActive ? t('noMatchingTransactions') : t('noTransactions')}
             </Text>
-            <Text style={[styles.emptyDesc, { color: theme.colors.textTertiary }]}>
-              {t('noTransactionsDesc')}
-            </Text>
+            {isFilterActive && (
+              <Pressable onPress={clearFilter} style={styles.clearButton}>
+                <Text style={[styles.clearButtonText, { color: theme.colors.primary }]}>
+                  {t('clearFilters')}
+                </Text>
+              </Pressable>
+            )}
           </View>
-        ) : (
-          filteredTransactions.map(transaction => {
-            const category = categories.find(c => c.id === transaction.category);
-            return (
-              <TransactionItem
-                key={transaction.id}
-                transaction={transaction}
-                category={category}
-                onPress={() => router.push(`/add-transaction?id=${transaction.id}`)}
-              />
-            );
-          })
-        )}
-      </ScrollView>
+        }
+      />
+
+      {/* Filter Sheet */}
+      <FilterSheet
+        visible={showFilterSheet}
+        onClose={() => setShowFilterSheet(false)}
+        filter={filter}
+        onApply={updateFilter}
+        onClear={clearFilter}
+        presets={presets}
+        onSavePreset={savePreset}
+        onApplyPreset={applyPreset}
+        onDeletePreset={deletePreset}
+      />
+
+      {/* FAB - Add Transaction */}
+      <Pressable
+        onPress={() => router.push('/add-transaction?type=income')}
+        style={({ pressed }) => [
+          styles.fab,
+          {
+            backgroundColor: theme.colors.primary,
+            bottom: insets.bottom + 80,
+            opacity: pressed ? 0.8 : 1,
+          },
+        ]}
+      >
+        <MaterialIcons name="add" size={28} color="#ffffff" />
+      </Pressable>
     </View>
   );
 }
@@ -109,44 +148,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 24,
     paddingBottom: 16,
   },
-  title: {
-    fontSize: 28,
+  headerTitle: {
+    fontSize: 32,
     fontWeight: '700',
   },
-  addButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 24,
-    paddingBottom: 16,
-    gap: 12,
-  },
-  filterButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-  },
-  filterText: {
+  headerSubtitle: {
     fontSize: 14,
-    fontWeight: '600',
+    marginTop: 4,
   },
-  content: {
-    flex: 1,
+  searchContainer: {
+    paddingHorizontal: 24,
+    marginBottom: 16,
   },
-  scrollContent: {
-    padding: 24,
-    paddingBottom: 100,
+  listContent: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
   },
   emptyState: {
     alignItems: 'center',
@@ -156,10 +175,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginTop: 16,
-  },
-  emptyDesc: {
-    fontSize: 14,
-    marginTop: 8,
     textAlign: 'center',
+  },
+  clearButton: {
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  clearButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  fab: {
+    position: 'absolute',
+    right: 24,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });

@@ -7,6 +7,7 @@ const KEYS = {
   SAVINGS_GOALS: '@sarafwain_goals',
   USER_SETTINGS: '@sarafwain_settings',
   DISMISSED_WARNINGS: '@sarafwain_dismissed_warnings',
+  FILTER_PRESETS: '@sarafwain_filter_presets',
 };
 
 export const storageService = {
@@ -130,10 +131,52 @@ export const storageService = {
         KEYS.SAVINGS_GOALS,
         KEYS.USER_SETTINGS,
         KEYS.DISMISSED_WARNINGS,
+        KEYS.FILTER_PRESETS,
       ]);
       return true;
     } catch (error) {
       console.error('Error clearing data:', error);
+      return false;
+    }
+  },
+
+  async getFilterPresets() {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.FILTER_PRESETS);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.error('Error getting filter presets:', error);
+      return [];
+    }
+  },
+
+  async saveFilterPreset(preset: any) {
+    try {
+      const presets = await this.getFilterPresets();
+      const exists = presets.find((p: any) => p.id === preset.id);
+      
+      if (exists) {
+        const updated = presets.map((p: any) => p.id === preset.id ? preset : p);
+        await AsyncStorage.setItem(KEYS.FILTER_PRESETS, JSON.stringify(updated));
+      } else {
+        presets.push(preset);
+        await AsyncStorage.setItem(KEYS.FILTER_PRESETS, JSON.stringify(presets));
+      }
+      return true;
+    } catch (error) {
+      console.error('Error saving filter preset:', error);
+      return false;
+    }
+  },
+
+  async deleteFilterPreset(id: string) {
+    try {
+      const presets = await this.getFilterPresets();
+      const filtered = presets.filter((p: any) => p.id !== id);
+      await AsyncStorage.setItem(KEYS.FILTER_PRESETS, JSON.stringify(filtered));
+      return true;
+    } catch (error) {
+      console.error('Error deleting filter preset:', error);
       return false;
     }
   },
