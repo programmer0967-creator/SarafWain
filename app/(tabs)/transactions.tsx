@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
+import { Menu, MenuItem } from 'react-native-material-menu';
 import { useTheme } from '../../hooks/useTheme';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useTransactionFilters } from '../../hooks/useTransactionFilters';
@@ -11,6 +12,7 @@ import { SearchBar } from '../../components/transaction/SearchBar';
 import { QuickFilters } from '../../components/transaction/QuickFilters';
 import { FilterSheet } from '../../components/transaction/FilterSheet';
 import { TransactionItem } from '../../components/transaction/TransactionItem';
+import { ExportSheet } from '../../components/export/ExportSheet';
 import { QuickFilterType } from '../../types';
 
 export default function TransactionsScreen() {
@@ -34,6 +36,7 @@ export default function TransactionsScreen() {
   } = useTransactionFilters();
 
   const [showFilterSheet, setShowFilterSheet] = useState(false);
+  const [showExportSheet, setShowExportSheet] = useState(false);
   const [selectedQuickFilter, setSelectedQuickFilter] = useState<QuickFilterType>('all');
 
   useEffect(() => {
@@ -52,12 +55,26 @@ export default function TransactionsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
-          {t('transactions')}
-        </Text>
-        <Text style={[styles.headerSubtitle, { color: theme.colors.textSecondary }]}>
-          {filteredTransactions.length} {t('transactions').toLowerCase()}
-        </Text>
+        <View style={styles.headerLeft}>
+          <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
+            {t('transactions')}
+          </Text>
+          <Text style={[styles.headerSubtitle, { color: theme.colors.textSecondary }]}>
+            {filteredTransactions.length} {t('transactions').toLowerCase()}
+          </Text>
+        </View>
+        <Pressable
+          onPress={() => setShowExportSheet(true)}
+          style={({ pressed }) => [
+            styles.exportButton,
+            {
+              backgroundColor: theme.colors.surface,
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}
+        >
+          <MaterialIcons name="file-download" size={20} color={theme.colors.primary} />
+        </Pressable>
       </View>
 
       {/* Search Bar */}
@@ -125,6 +142,13 @@ export default function TransactionsScreen() {
         onDeletePreset={deletePreset}
       />
 
+      {/* Export Sheet */}
+      <ExportSheet
+        visible={showExportSheet}
+        onClose={() => setShowExportSheet(false)}
+        filteredTransactions={isFilterActive ? filteredTransactions : undefined}
+      />
+
       {/* FAB - Add Transaction */}
       <Pressable
         onPress={() => router.push('/add-transaction?type=income')}
@@ -148,8 +172,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     paddingHorizontal: 24,
     paddingBottom: 16,
+  },
+  headerLeft: {
+    flex: 1,
   },
   headerTitle: {
     fontSize: 32,
@@ -157,6 +187,14 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 14,
+    marginTop: 4,
+  },
+  exportButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 4,
   },
   searchContainer: {

@@ -3,6 +3,14 @@ import { Transaction, FinancialAnalysis } from '../types';
 import { startOfMonth, endOfMonth, differenceInDays } from 'date-fns';
 
 export const analyticsService = {
+  calculateAnalysis(
+    transactions: Transaction[],
+    categories: any[],
+    startingBalance: number = 0
+  ): FinancialAnalysis {
+    return this.calculateFinancialAnalysis(transactions, startingBalance);
+  },
+
   calculateFinancialAnalysis(
     transactions: Transaction[],
     startingBalance: number = 0

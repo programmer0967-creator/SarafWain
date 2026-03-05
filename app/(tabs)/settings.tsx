@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, ScrollView, Pressable, Switch } from 'react-nat
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useSettings } from '../../hooks/useSettings';
 import { useAlert } from '@/template';
 import { storageService } from '../../services/storageService';
+import { ExportSheet } from '../../components/export/ExportSheet';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -16,6 +18,7 @@ export default function SettingsScreen() {
   const { t, language, setLanguage } = useLanguage();
   const { settings, updateSettings } = useSettings();
   const { showAlert } = useAlert();
+  const [showExportSheet, setShowExportSheet] = useState(false);
 
   const handleClearData = () => {
     showAlert(t('clearData'), t('clearDataMsg'), [
@@ -147,6 +150,11 @@ export default function SettingsScreen() {
             {t('data')}
           </Text>
           <SettingItem
+            icon="file-download"
+            label={t('exportData')}
+            onPress={() => setShowExportSheet(true)}
+          />
+          <SettingItem
             icon="delete-forever"
             label={t('clearAllData')}
             onPress={handleClearData}
@@ -170,6 +178,12 @@ export default function SettingsScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Export Sheet */}
+      <ExportSheet
+        visible={showExportSheet}
+        onClose={() => setShowExportSheet(false)}
+      />
     </View>
   );
 }

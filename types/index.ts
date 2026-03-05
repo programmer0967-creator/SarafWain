@@ -72,3 +72,20 @@ export interface FilterPreset {
 }
 
 export type QuickFilterType = 'all' | 'today' | 'week' | 'month' | 'year';
+
+export interface ExportOptions {
+  format: 'csv' | 'pdf';
+  dateFrom?: string;
+  dateTo?: string;
+  includeTransactions: boolean;
+  includeAnalytics: boolean;
+  includeCategoryBreakdown: boolean;
+  includeCharts: boolean;
+  filteredOnly?: boolean;
+}
+
+export interface ExportResult {
+  success: boolean;
+  uri?: string;
+  error?: string;
+}
