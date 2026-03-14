@@ -128,3 +128,68 @@ export interface BudgetAlert {
   timestamp: string;
   dismissed: boolean;
 }
+
+// Cloud Sync Types
+export interface CloudSyncSettings {
+  autoSyncEnabled: boolean;
+  syncFrequency: 'realtime' | 'hourly' | 'daily' | 'manual';
+  lastSyncAt?: string;
+  deviceId: string;
+  deviceName: string;
+}
+
+export interface SyncStatus {
+  isSyncing: boolean;
+  lastSyncAt?: string;
+  error?: string;
+  itemsSynced: number;
+  conflictsResolved: number;
+}
+
+export interface BackupMetadata {
+  id: string;
+  userId: string;
+  backupName: string;
+  deviceId: string;
+  deviceName: string;
+  transactionsCount: number;
+  categoriesCount: number;
+  budgetsCount: number;
+  backupSize: number;
+  createdAt: string;
+}
+
+export interface SyncLogEntry {
+  id: string;
+  userId: string;
+  deviceId: string;
+  syncType: 'push' | 'pull' | 'merge';
+  status: 'success' | 'failed' | 'conflict';
+  itemsSynced: number;
+  conflictsResolved: number;
+  errorMessage?: string;
+  createdAt: string;
+}
+
+export interface ConflictResolution {
+  strategy: 'local' | 'remote' | 'merge' | 'manual';
+  conflicts: DataConflict[];
+}
+
+export interface DataConflict {
+  id: string;
+  type: 'transaction' | 'category' | 'budget';
+  localData: any;
+  remoteData: any;
+  localVersion: number;
+  remoteVersion: number;
+  localUpdatedAt: string;
+  remoteUpdatedAt: string;
+}
+
+export interface CloudData {
+  transactions: Transaction[];
+  categories: Category[];
+  budgets: Budget[];
+  settings: Settings;
+}

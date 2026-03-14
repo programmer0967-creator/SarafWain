@@ -10,6 +10,7 @@ import { useSettings } from '../../hooks/useSettings';
 import { useAlert } from '@/template';
 import { storageService } from '../../services/storageService';
 import { ExportSheet } from '../../components/export/ExportSheet';
+import { CloudSyncStatus } from '../../components/cloud/CloudSyncStatus';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -76,6 +77,13 @@ export default function SettingsScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
+            {t('cloudSync')}
+          </Text>
+          <CloudSyncStatus onPress={() => router.push('/cloud-sync')} />
+        </View>
+
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
             {t('profile')}
